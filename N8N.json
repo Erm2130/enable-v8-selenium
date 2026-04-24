@@ -1,0 +1,416 @@
+{
+  "name": "Enable GAS Chrome V8 Runtime",
+  "nodes": [
+    {
+      "parameters": {
+        "updates": [
+          "message"
+        ],
+        "additionalFields": {}
+      },
+      "id": "a048bd58-8779-4092-992b-ff3723619f9d",
+      "name": "Telegram Trigger",
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1,
+      "position": [
+        -1248,
+        1888
+      ],
+      "webhookId": "23a7f641-5113-4d02-bd6f-838861e29ad5",
+      "credentials": {
+        "telegramApi": {
+          "id": "CnDKqOUFpGJISaMR",
+          "name": "V8"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": false,
+            "leftValue": "",
+            "typeValidation": "loose"
+          },
+          "conditions": [
+            {
+              "id": "check-sheets-url",
+              "leftValue": "={{ $json.message.text }}",
+              "rightValue": "docs.google.com/spreadsheets",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        -1040,
+        1888
+      ],
+      "id": "7a2955c8-0644-4194-9898-c5100d1c09e2",
+      "name": "เช็ค URL ถูกต้องมั้ย"
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $json.message.chat.id }}",
+        "text": "❌ *URL ไม่ถูกต้อง*\n\nกรุณาส่ง URL ของ Google Sheets เท่านั้น\nตัวอย่าง:\n`https://docs.google.com/spreadsheets/d/xxx/edit`",
+        "additionalFields": {
+          "parse_mode": "Markdown"
+        }
+      },
+      "id": "5838d4d6-d619-4531-bd1c-f448a0d2f2a2",
+      "name": "แจ้ง URL ไม่ถูกต้อง",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1,
+      "position": [
+        -848,
+        2016
+      ],
+      "webhookId": "15e06d05-6589-4f48-bc83-ce268249563a",
+      "credentials": {
+        "telegramApi": {
+          "id": "CnDKqOUFpGJISaMR",
+          "name": "V8"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $json.message.chat.id }}",
+        "text": "⏳ *กำลังดำเนินการ...*\n\nได้รับ URL แล้ว กำลังเปิด V8 Runtime ให้\nรอสักครู่นะครับ 🔧",
+        "additionalFields": {
+          "parse_mode": "Markdown"
+        }
+      },
+      "id": "b32c2162-76c6-4580-9291-3c69ae128d62",
+      "name": "แจ้งกำลังดำเนินการ",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1,
+      "position": [
+        -848,
+        1792
+      ],
+      "webhookId": "04a00b99-30a2-4632-bd1f-e341a05d344e",
+      "credentials": {
+        "telegramApi": {
+          "id": "CnDKqOUFpGJISaMR",
+          "name": "V8"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://furthermost-lanelle-loonily.ngrok-free.dev/enable-v8",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "X-API-Key",
+              "value": "thai_bot_secret_20288V88881234"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n    \"url\": \"{{ $('Telegram Trigger').item.json.message.text }}\"\n}",
+        "options": {
+          "response": {
+            "response": {
+              "neverError": true
+            }
+          },
+          "timeout": 120000
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        -640,
+        1792
+      ],
+      "id": "c064e444-1364-4d63-b394-e57369eb050b",
+      "name": "เรียก API เปิด V8"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "check-success",
+              "leftValue": "={{ $json.success }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        -448,
+        1792
+      ],
+      "id": "b19d40a6-f0a2-43fb-87d5-c43128051ce1",
+      "name": "เช็คผลลัพธ์"
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger').item.json.message.chat.id }}",
+        "text": "✅ *เปิด V8 Runtime สำเร็จ!*\n\n📋 Sheet ของคุณพร้อมใช้งานแล้ว\n",
+        "additionalFields": {
+          "parse_mode": "Markdown"
+        }
+      },
+      "id": "8e1ea0b2-361e-4eac-937a-f8ab864e2f40",
+      "name": "แจ้งสำเร็จ",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1,
+      "position": [
+        -240,
+        1680
+      ],
+      "webhookId": "17a0c07a-656c-44c1-a7fc-e0eff74bd7ab",
+      "credentials": {
+        "telegramApi": {
+          "id": "CnDKqOUFpGJISaMR",
+          "name": "V8"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose"
+          },
+          "conditions": [
+            {
+              "id": "check-relogin",
+              "leftValue": "={{ $json.action_required }}",
+              "rightValue": "relogin",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        -240,
+        1888
+      ],
+      "id": "847542df-908d-4133-93b4-5444d4773f57",
+      "name": "เช็คประเภท Error"
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger').item.json.message.chat.id }}",
+        "text": "⚠️ *Session หมดอายุ*\n\nระบบต้องการการยืนยันตัวตนใหม่\nกรุณาแจ้งผู้ดูแลระบบให้รัน `login_once.py` ด้วยครับ\n\n_โปรดลองใหม่อีกครั้งหลังจากนั้น_",
+        "additionalFields": {
+          "parse_mode": "Markdown"
+        }
+      },
+      "id": "6f5847e7-3145-48e5-903d-e96b8ecbacf8",
+      "name": "แจ้ง Session หมดอายุ",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1,
+      "position": [
+        -48,
+        1792
+      ],
+      "webhookId": "48680d92-2126-41a0-9c90-85d358db6de2",
+      "credentials": {
+        "telegramApi": {
+          "id": "CnDKqOUFpGJISaMR",
+          "name": "V8"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger').item.json.message.chat.id }}",
+        "text": "❌ *ดำเนินการไม่สำเร็จ*\n\n_กรุณาตรวจสอบว่า:_\n• URL ถูกต้องและมีสิทธิ์แก้ไข Sheet\n• ลองส่ง URL ใหม่อีกครั้ง",
+        "additionalFields": {
+          "parse_mode": "Markdown"
+        }
+      },
+      "id": "4e0ffc33-7ca5-4c8d-8c2d-fb72a788bcf2",
+      "name": "แจ้ง Error อื่นๆ",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1,
+      "position": [
+        -48,
+        1984
+      ],
+      "webhookId": "812fed10-8e6a-4689-a0b6-92666d442556",
+      "credentials": {
+        "telegramApi": {
+          "id": "CnDKqOUFpGJISaMR",
+          "name": "V8"
+        }
+      }
+    }
+  ],
+  "pinData": {
+    "Telegram Trigger": [
+      {
+        "json": {
+          "update_id": 51858457,
+          "message": {
+            "message_id": 16,
+            "from": {
+              "id": 8232087647,
+              "is_bot": false,
+              "first_name": "รชตนันท์(นิค)",
+              "last_name": "CPD-SDS",
+              "username": "Rachatanan",
+              "language_code": "en"
+            },
+            "chat": {
+              "id": 8232087647,
+              "first_name": "รชตนันท์(นิค)",
+              "last_name": "CPD-SDS",
+              "username": "Rachatanan",
+              "type": "private"
+            },
+            "date": 1777004592,
+            "text": "https://docs.google.com/spreadsheets/d/1KXBxhksnmopHFkrMw54cGW1COONh8n8npqYiG6YRQrY/edit?gid=0#gid=0",
+            "entities": [
+              {
+                "offset": 0,
+                "length": 100,
+                "type": "url"
+              }
+            ]
+          }
+        }
+      }
+    ]
+  },
+  "connections": {
+    "Telegram Trigger": {
+      "main": [
+        [
+          {
+            "node": "เช็ค URL ถูกต้องมั้ย",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "เช็ค URL ถูกต้องมั้ย": {
+      "main": [
+        [
+          {
+            "node": "แจ้งกำลังดำเนินการ",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "แจ้ง URL ไม่ถูกต้อง",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "แจ้งกำลังดำเนินการ": {
+      "main": [
+        [
+          {
+            "node": "เรียก API เปิด V8",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "เรียก API เปิด V8": {
+      "main": [
+        [
+          {
+            "node": "เช็คผลลัพธ์",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "เช็คผลลัพธ์": {
+      "main": [
+        [
+          {
+            "node": "แจ้งสำเร็จ",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "เช็คประเภท Error",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "เช็คประเภท Error": {
+      "main": [
+        [
+          {
+            "node": "แจ้ง Session หมดอายุ",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "แจ้ง Error อื่นๆ",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "adeab1ff-cbf0-4afa-aceb-5ae6f7674af1",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "e290665da72e832015ad1c6d3046684b3949203c7816d8e9845b4caa7e1e367f"
+  },
+  "id": "hrj2QErY5wJR8rGC",
+  "tags": []
+}
