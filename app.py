@@ -61,7 +61,7 @@ def enable_v8():
     if 'docs.google.com/spreadsheets' not in sheets_url:
         return jsonify({'success': False, 'error': 'URL ต้องเป็น Google Sheets'}), 400
 
-    driver = get_driver(headless=False)
+    driver = get_driver(headless=True)
     try:
         # ตรวจสอบ session
         if not check_login_status(driver):
