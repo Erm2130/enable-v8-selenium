@@ -1,0 +1,14 @@
+# ห้าม commit ไฟล์พวกนี้เด็ดขาด
+.env
+chrome-profile/
+session.json
+
+# Screenshots debug
+*.png
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+venv/
