@@ -29,7 +29,6 @@ cp .env.example .env
 GOOGLE_EMAIL=อีเมลที่มีสิทธิ์แก้ไข Sheet ทุกบอร์ด
 GOOGLE_PASSWORD=รหัสผ่าน
 API_KEY=รหัสลับสำหรับ n8n (ตั้งเองได้อะไรก็ได้)
-HEADLESS=true
 SAVE_SCREENSHOTS=false
 ```
 
