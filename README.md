@@ -7,7 +7,7 @@
 ## Requirements
 
 - Python 3.10+
-- Google Chrome (ติดตั้งแล้ว)
+- Google Chrome
 - n8n instance
 - Telegram Bot token
 
